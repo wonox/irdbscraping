@@ -84,3 +84,61 @@ def scrap(kikan):
 if __name__ == "__main__":
     type_list = main()
 ```
+
+## データ加工
+機関名['institutions']をindexとし、資源タイプ['typename']ごとの数を表にする。
+
+```python
+# データ加工
+import pandas as pd
+# list化
+listOfValues = list(type_list.values())
+# フラット化
+flat_list = [item for l in listOfValues for item in l]
+koumoku = ['institutions', 'typename', 'nums']
+# 項目名を加えて辞書化
+listext = []
+for v in flat_list:
+    listext.append(dict(zip(koumoku,v)))
+
+# pandasのDataFrame化
+df = pd.DataFrame(listext)
+
+# 縦持ちデータフレームdfを、横持ちに変換
+pivot_orders_df = df.pivot_table(values=['nums'], index=['institutions'], columns=['typename'], aggfunc='sum')
+pivot_orders_df = pivot_orders_df.rename(index={'': '全体'})
+pivot_orders_df.fillna(0,inplace=True)
+pivot_orders_df
+# マルチインデックスを解除
+#pivot_orders_df_reset = pivot_orders_df.reset_index(level=0)
+pivot_orders_df.columns = pivot_orders_df.columns.droplevel(0)
+#pandas 0.18.0 and higher
+pivot_orders_df = pivot_orders_df.rename_axis(None, axis=1)
+pivot_orders_df
+# 数字に見えるものを数値化
+cols = pivot_orders_df.columns
+pivot_orders_df[cols] = pivot_orders_df[cols].apply(pd.to_numeric, errors='coerce')
+# 前回保存したDataFrameのファイルから読み込む
+import pandas as pd
+pivot_orders_df = pd.read_pickle('./pivot_orders_df.pkl.gz', compression='gzip') # 圧縮有り
+```
+
+# 資源タイプ
+使われている資源タイプは35個あった。
+> Index(['article', 'bachelor thesis', 'book', 'book part',
+>  'cartographic material', 'conference object', 'conference paper',
+>  'conference poster', 'conference proceedings', 'data paper', 'dataset',
+>  'departmental bulletin paper', 'doctoral thesis', 'editorial', 'image',
+>  'interview', 'journal article', 'learning object', 'lecture',
+>  'manuscript', 'master thesis', 'musical notation', 'newspaper', 'other',
+>  'periodical', 'report', 'report part', 'research report',
+>  'review article', 'software', 'sound', 'still image',
+>  'technical report', 'thesis', 'working paper'],
+>  dtype='object')
+ただし、JPCOARスキーマ 語彙としては47ある
+> 語彙 conference paper data paper departmental bulletin paper editorial journal article newspaper periodical review article software paper article book book part cartographic material map conference object conference proceedings conference poster dataset interview image still image moving image video lecture patent internal report report research report technical report policy report report part working paper data management plan sound thesis bachelor thesis master thesis doctoral thesis interactive resource learning object manuscript musical notation research proposal software technical documentation workflow other
+
+
+
+# ソースなど
+https://github.com/wonox/irdbscraping/blob/main/irdbscraping.ipynb
