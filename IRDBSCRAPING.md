@@ -293,6 +293,86 @@ pivot_orders_df4['Total'].hist(bins=100) # histogramを出すだけならこち�
 
 ![機関ごと件数の合計値でヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E6%A9%9F%E9%96%A2%E3%81%94%E3%81%A8%E4%BB%B6%E6%95%B0%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
 
+```python
+# 度数分布表を一発で自動生成
+# https://qiita.com/TakuTaku36/items/91032625e482f2ae6e18
+import numpy as np
+# def Frequency_Distribution(data, class_width=None):
+def Frequency_Distribution(data, class_width):
+    data = np.asarray(data)
+    if class_width is None:
+        class_size = int(np.log2(data.size).round()) + 1
+        class_width = round((data.max() - data.min()) / class_size)
+
+    bins = np.arange(0, data.max()+class_width+1, class_width)
+    hist = np.histogram(data, bins)[0]
+    cumsum = hist.cumsum()
+
+    return pd.DataFrame({'階級値': (bins[1:] + bins[:-1]) / 2,
+                         '度数': hist,
+                         '累積度数': cumsum,
+                         '相対度数': hist / cumsum[-1],
+                         '累積相対度数': cumsum / cumsum[-1]},
+                        index=pd.Index([f'{bins[i]}以上{bins[i+1]}未満'
+                                        for i in range(hist.size)],
+                                       name='階級'))
+x = list(pivot_orders_df4['Total'])
+# x = [0, 3, 3, 5, 5, 5, 5, 7, 7, 10, 11, 14, 14, 14]
+class_width = None #を指定すると自動
+Frequency_Distribution(x,class_width)
+```
+
+## 度数分布表
+|階級   |階級値   |度数   |累積度数   |相対度数   |累積相対度数   |
+|---|---|---|---|---|---|
+|0以上30958未満   |15479.0   |591   |591   |0.965686   |0.965686   |
+|30958以上61916未満   |	46437.0   |	14   |	605   |	0.022876   |	0.988562   |
+|61916以上92874未満   |	77395.0   |	4   |	609   |	0.006536   |	0.995098   |
+|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
+|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
+|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
+|123832以上154790未満   |	139311.0   |	0   |	610   |	0.000000   |	0.996732   |
+|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
+|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
+|154790以上185748未満   |	170269.0   |	0   |	610   |	0.000000   |	0.996732   |
+|185748以上216706未満   |	201227.0   |	0   |	610   |	0.000000   |	0.996732   |
+|216706以上247664未満   |	232185.0   |	1   |	611   |	0.001634   |	0.998366   |
+|247664以上278622未満   |	263143.0   |	0   |	611   |	0.000000   |	0.998366   |
+|278622以上309580未満   |	294101.0   |	0   |	611   |	0.000000   |	0.998366   |
+|309580以上340538未満   |	325059.0   |	1   |	612   |	0.001634   |	1.000000   |
+
+```python
+# コンテンツ数上位50機関で構成比率の帯グラフ化
+# グラフの文字化け対策
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+plt.rcParams["font.family"] = "MS Gothic"
+# df.iloc[:, 1:] = df.iloc[:, 1:].div(df['total'], axis=0).mul(100).round(2).astype(str).add(' %')
+# 行ごとの百分率に変換する
+pivot_orders_df5 = pivot_orders_df4.div(pivot_orders_df4['Total'], axis=0).mul(100)  # .round(2) 四捨五入
+# df.drop("b", axis=1)
+# pivot_orders_df5.iloc[:50,].drop("Total", axis=1).plot.bar(stacked=True)  
+# .iloc[:12,] 12機関目までにする
+# 判例の位置調整　https://qiita.com/matsui-k20xx/items/291400ed56a39ed63462
+pivot_orders_df5.iloc[:50,].drop("Total", axis=1)\
+    .plot(kind='bar', stacked=True, figsize=(10,5), width=1, linewidth=0,title='上位50機関',)\
+    .legend(bbox_to_anchor=(0, -0.5), loc='upper left', borderaxespad=0, fontsize=18)
+```
+
+![コンテンツ数上位50機関で構成比率の帯グラフ](https://github.com/wonox/irdbscraping/blob/main/%E4%B8%8A%E4%BD%8D50%E6%A9%9F%E9%96%A2%E7%A9%8D%E3%81%BF%E4%B8%8A%E3%81%92%E7%99%BE%E5%88%86%E7%8E%87output.png)
+
+```python
+# コンテンツ数上位50機関の積み上げグラフ
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+plt.rcParams["font.family"] = "MS Gothic"
+# .iloc[:12,] 12機関目までにする
+# 判例の位置調整　https://qiita.com/matsui-k20xx/items/291400ed56a39ed63462
+pivot_orders_df4.iloc[:50,].drop("Total", axis=1)\
+    .plot(kind='bar', stacked=True, figsize=(10,5), width=1, linewidth=0,title='上位50機関',)\
+    .legend(bbox_to_anchor=(0, -0.5), loc='upper left', borderaxespad=0, fontsize=18)
+```
+
 # ソースなど
 
 https://github.com/wonox/irdbscraping/blob/main/irdbscraping.ipynb
