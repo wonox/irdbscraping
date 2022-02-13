@@ -375,6 +375,85 @@ pivot_orders_df4.iloc[:50,].drop("Total", axis=1)\
 
 ![コンテンツ数上位50機関の積み上げグラフ](https://github.com/wonox/irdbscraping/blob/main/%E4%B8%8A%E4%BD%8D50%E6%A9%9F%E9%96%A2%E7%A9%8D%E3%81%BF%E4%B8%8A%E3%81%92.png)
 
+```python
+# 各列のヒストグラムを作成
+plt.rcParams['font.size'] = 10
+fig, ax = plt.subplots(figsize=(30,10), constrained_layout=True)
+# pivot_orders_df5 は 行ごとの百分率に変換したDataFrame
+pivot_orders_df5.hist(ax=ax)
+fig.savefig("資料タイプ別百分率各列のヒストグラム.png")
+# 6.7s
+```
+![資料タイプ別百分率各列のヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E8%B3%87%E6%96%99%E3%82%BF%E3%82%A4%E3%83%97%E5%88%A5%E7%99%BE%E5%88%86%E7%8E%87%E5%90%84%E5%88%97%E3%81%AE%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
+
+## 紀要の構成比でヒストグラムを作成
+
+```python
+# 紀要['departmental bulletin paper']の個数でソートしたものを kiyou とする
+kiyou = pivot_orders_df5.sort_values(by='departmental bulletin paper', ascending=False) 
+# 紀要が90%以上　>90 のもの
+print(kiyou['departmental bulletin paper'][kiyou['departmental bulletin paper'] > 99])  #  == 100
+# kiyou['departmental bulletin paper'].hist(bins=20) # histogramを出すだけならこちらでもよい
+# '紀要の百分率でヒストグラム'
+import matplotlib.pyplot as plt
+# タイトル追加
+plt.title('紀要の百分率でヒストグラム')
+# x軸にscore、y軸にfreq
+plt.xlabel('percentage')
+plt.ylabel('機関数')
+# 目盛りを変更
+plt.ylim(0, 190)
+plt.xticks([0,10,20,30,40,50,60,70,80,90,100]) 
+# ヒストグラムを描画する（表示する幅は50〜100）、階級数（棒の数）は10
+plt.hist(kiyou['departmental bulletin paper'], range=(00, 100), bins=10)
+# plt.hist(kiyou['journal article'], range=(00, 100), bins=10)
+```
+![紀要の構成比でヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E7%B4%80%E8%A6%81%E3%81%AE%E7%99%BE%E5%88%86%E7%8E%87%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
+
+## 紀要の度数分布表
+紀要のみ（100%）の機関が5%（32機関）
+紀要の構成比で80%以上の機関が43%以上（268機関）
+```python
+x = list(kiyou['departmental bulletin paper'])
+Frequency_Distribution(x, None)
+```
+|階級   |   階級値   |	度数   |	累積度数   |	相対度数   |	累積相対度数|
+|---|---|---|---|---|---|
+|0.0以上10.0未満   |	5.0   |	50   |	50   |	0.081699   |	0.081699|
+|10.0以上20.0未満   |	15.0   |	21   |	71   |	0.034314   |	0.116013|
+|20.0以上30.0未満   |	25.0   |	26   |	97   |	0.042484   |	0.158497|
+|30.0以上40.0未満   |	35.0   |	35   |	132   |	0.057190   |	0.215686|
+|40.0以上50.0未満   |	45.0   |	35   |	167   |	0.057190   |	0.272876|
+|50.0以上60.0未満   |	55.0   |	44   |	211   |	0.071895   |	0.344771|
+|60.0以上70.0未満   |	65.0   |	69   |	280   |	0.112745   |	0.457516|
+|70.0以上80.0未満   |	75.0   |	64   |	344   |	0.104575   |	0.562092|
+|80.0以上90.0未満   |	85.0   |	85   |	429   |	0.138889   |	0.700980|
+|90.0以上100.0未満   |	95.0   |	151   |	580   |	0.246732   |	0.947712|
+|100.0以上110.0未満   |	105.0   |	32   |	612   |	0.052288   |	1.000000|
+
+## 雑誌論文
+- 雑誌論文の構成比率が100%の機関（桃山学院教育大学）は、機関全体で全3件でかつ、中身は紀要のようだ
+- 98%の國學院大學は、学内学会的なものを雑誌論文としている
+- 97%の国立社会保障・人口問題研究所は、自機関発行の雑誌、working paper を含んでいる
+- 沖縄科学技術大学院大学は、いわゆる典型的なGreen OA論文が多い
+```python
+# 雑誌論文['journal article']の個数でソートしたものを joua とする
+joua = pivot_orders_df5.sort_values(by='journal article', ascending=False) 
+# 雑誌論文が90%以上　>90 のもの
+print(joua['journal article'][joua['journal article'] >= 90])  #  == 100
+# '雑誌論文の百分率でヒストグラム'
+import matplotlib.pyplot as plt
+# タイトル追加
+plt.title('雑誌論文の百分率でヒストグラム')
+# x軸にscore、y軸にfreq
+plt.xlabel('percentage')
+plt.ylabel('機関数')
+# 目盛りを変更
+plt.ylim(0, 190)
+plt.xticks([0,10,20,30,40,50,60,70,80,90,100]) 
+# ヒストグラムを描画する（表示する幅は0〜100）、階級数（棒の数）は10
+plt.hist(joua['journal article'], range=(00, 100), bins=10)
+```
 
 
 # ソースなど
