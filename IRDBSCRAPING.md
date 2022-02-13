@@ -454,6 +454,65 @@ plt.xticks([0,10,20,30,40,50,60,70,80,90,100])
 # ヒストグラムを描画する（表示する幅は0〜100）、階級数（棒の数）は10
 plt.hist(joua['journal article'], range=(00, 100), bins=10)
 ```
+![雑誌論文構成比のヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E9%9B%91%E8%AA%8C%E8%AB%96%E6%96%87%E7%99%BE%E5%88%86%E7%8E%87%E3%81%AE%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
+
+## 構成比率（百分率）で階層的クラスタリング
+```python
+# 構成比率（百分率）で階層的クラスタリング
+# 【python】scipyで階層型クラスタリングするときの知見まとめ
+# https://www.haya-programming.com/entry/2019/02/11/035943#linkage
+# pivot_orders_df2 は実数値で、合計列/行がないDF
+import numpy as np
+from collections import defaultdict
+from scipy.spatial.distance import pdist
+from scipy.cluster.hierarchy import linkage, fcluster
+from sklearn.datasets import load_digits
+
+def gen_data():
+    digits = load_digits()
+    label_uniq = np.unique(digits.target)
+    result = []
+    for label in label_uniq:
+        result.append(digits.data[digits.target == label].mean(axis=0))
+    return result, label_uniq
+
+def clustering_fcluster():
+    X, y = gen_data()
+    S = pdist(X)
+    # methods = ["single", "complete", "average", "weighted", "centroid", "median", "ward"]
+    Z = linkage(pivot_orders_df2, metric='euclidean', method='complete')
+    # Z = linkage(pivot_orders_df2, metric='euclidean', method='ward')
+    # Z = linkage(pivot_orders_df4, metric='euclidean', method='average')
+    # Z = linkage(pivot_orders_df2, method="average")
+    # criterion= ‘maxclust’、最大クラスタ数
+    # ’distance’ 距離で閾値を指定
+    # inconsistent (default)
+    # monocrit, maxclust_monocrit
+    result = fcluster(Z, t=10, criterion="maxclust")
+    # result = fcluster(Z, t=5, criterion="distance")
+    d = defaultdict(list)
+    for i, r in enumerate(result):
+        d[r].append(i)
+    cluster_list = []
+    for k, v in d.items():
+        # print(k, pivot_orders_df2.index[v])
+        cluster_list.append(pivot_orders_df2.index[v])
+        # print(k,v) # v は行番号のリスト
+    return cluster_list
+    
+if __name__ == "__main__":
+    cluster_list = clustering_fcluster()
+    print(cluster_list)
+```
+
+## 構成比率で階層的クラスタリングした結果ごとに帯グラフを描く
+- 階層的クラスタ別構成比_6' は学位論文と紀要が半々ぐらいのクラスターか？
+- 階層的クラスタ別構成比_7' はデータセットが多めのクラスター
+- それ以外の多数のところはそれほどクラスターに特徴がないように見える
+- 個数１のクラスタはそれぞれ特徴はある。
+
+
+
 
 
 # ソースなど
