@@ -525,6 +525,16 @@ for i, clust in enumerate(cluster_list):
 ## 元の数値（百分率でなく）各列のヒストグラムを作成
 資料タイプ別数値の各列でヒストグラムを作成
 まったく特徴がでないことが分かる。
+```python
+# 各列のヒストグラムを作成
+# pivot_orders_df4 は実数値でソート済み、合計列が右端にある
+plt.rcParams['font.size'] = 10
+fig3, ax = plt.subplots(figsize=(30,10))
+# pivot_orders_df4 は 元のDataFrame
+pivot_orders_df4.hist(ax=ax)
+fig3.savefig("元の数値の各列のヒストグラム.png")
+```
+![元の数値の各列のヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E5%85%83%E3%81%AE%E6%95%B0%E5%80%A4%E3%81%AE%E5%90%84%E5%88%97%E3%81%AE%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
 
 
 
