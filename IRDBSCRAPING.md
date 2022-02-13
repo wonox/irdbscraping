@@ -373,6 +373,10 @@ pivot_orders_df4.iloc[:50,].drop("Total", axis=1)\
     .legend(bbox_to_anchor=(0, -0.5), loc='upper left', borderaxespad=0, fontsize=18)
 ```
 
+![コンテンツ数上位50機関の積み上げグラフ](https://github.com/wonox/irdbscraping/blob/main/%E4%B8%8A%E4%BD%8D50%E6%A9%9F%E9%96%A2%E7%A9%8D%E3%81%BF%E4%B8%8A%E3%81%92.png)
+
+
+
 # ソースなど
 
 https://github.com/wonox/irdbscraping/blob/main/irdbscraping.ipynb
