@@ -510,7 +510,21 @@ if __name__ == "__main__":
 - 階層的クラスタ別構成比_7' はデータセットが多めのクラスター
 - それ以外の多数のところはそれほどクラスターに特徴がないように見える
 - 個数１のクラスタはそれぞれ特徴はある。
+```python
+# コンテンツ数上位50機関で構成比率の帯グラフ化
+from matplotlib import rcParams
+plt.rcParams["font.family"] = "MS Gothic"
+for i, clust in enumerate(cluster_list):
+   pivot_orders_df5.loc[clust].iloc[:50,].drop("Total", axis=1)\
+    .plot(kind='bar', stacked=True, figsize=(10,5), width=1, linewidth=0,title='階層的クラスタ別構成比_'+str(i),)\
+    .legend(bbox_to_anchor=(0, -0.5), loc='upper left', borderaxespad=0, fontsize=18)
+   
+```
+![構成比率で階層的クラスタリング帯グラフ](https://github.com/wonox/irdbscraping/blob/main/%E9%9A%8E%E5%B1%A4%E7%9A%84%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E5%B8%AF%E3%82%B0%E3%83%A9%E3%83%95.png)
 
+## 元の数値（百分率でなく）各列のヒストグラムを作成
+資料タイプ別数値の各列でヒストグラムを作成
+まったく特徴がでないことが分かる。
 
 
 
