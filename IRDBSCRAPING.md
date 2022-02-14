@@ -323,23 +323,24 @@ Frequency_Distribution(x,class_width)
 ```
 
 ## 度数分布表
-|階級   |階級値   |度数   |累積度数   |相対度数   |累積相対度数   |
-|---|---|---|---|---|---|
-|0以上30958未満   |15479.0   |591   |591   |0.965686   |0.965686   |
-|30958以上61916未満   |	46437.0   |	14   |	605   |	0.022876   |	0.988562   |
-|61916以上92874未満   |	77395.0   |	4   |	609   |	0.006536   |	0.995098   |
-|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
-|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
-|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
-|123832以上154790未満   |	139311.0   |	0   |	610   |	0.000000   |	0.996732   |
-|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
-|92874以上123832未満   |	108353.0   |	1   |	610   |	0.001634   |	0.996732   |
-|154790以上185748未満   |	170269.0   |	0   |	610   |	0.000000   |	0.996732   |
-|185748以上216706未満   |	201227.0   |	0   |	610   |	0.000000   |	0.996732   |
-|216706以上247664未満   |	232185.0   |	1   |	611   |	0.001634   |	0.998366   |
-|247664以上278622未満   |	263143.0   |	0   |	611   |	0.000000   |	0.998366   |
-|278622以上309580未満   |	294101.0   |	0   |	611   |	0.000000   |	0.998366   |
-|309580以上340538未満   |	325059.0   |	1   |	612   |	0.001634   |	1.000000   |
+
+| 階級                    | 階級値   | 度数 | 累積度数 | 相対度数 | 累積相対度数 |
+| ----------------------- | -------- | ---- | -------- | -------- | ------------ |
+| 0 以上 30958 未満       | 15479.0  | 591  | 591      | 0.965686 | 0.965686     |
+| 30958 以上 61916 未満   | 46437.0  | 14   | 605      | 0.022876 | 0.988562     |
+| 61916 以上 92874 未満   | 77395.0  | 4    | 609      | 0.006536 | 0.995098     |
+| 92874 以上 123832 未満  | 108353.0 | 1    | 610      | 0.001634 | 0.996732     |
+| 92874 以上 123832 未満  | 108353.0 | 1    | 610      | 0.001634 | 0.996732     |
+| 92874 以上 123832 未満  | 108353.0 | 1    | 610      | 0.001634 | 0.996732     |
+| 123832 以上 154790 未満 | 139311.0 | 0    | 610      | 0.000000 | 0.996732     |
+| 92874 以上 123832 未満  | 108353.0 | 1    | 610      | 0.001634 | 0.996732     |
+| 92874 以上 123832 未満  | 108353.0 | 1    | 610      | 0.001634 | 0.996732     |
+| 154790 以上 185748 未満 | 170269.0 | 0    | 610      | 0.000000 | 0.996732     |
+| 185748 以上 216706 未満 | 201227.0 | 0    | 610      | 0.000000 | 0.996732     |
+| 216706 以上 247664 未満 | 232185.0 | 1    | 611      | 0.001634 | 0.998366     |
+| 247664 以上 278622 未満 | 263143.0 | 0    | 611      | 0.000000 | 0.998366     |
+| 278622 以上 309580 未満 | 294101.0 | 0    | 611      | 0.000000 | 0.998366     |
+| 309580 以上 340538 未満 | 325059.0 | 1    | 612      | 0.001634 | 1.000000     |
 
 ```python
 # コンテンツ数上位50機関で構成比率の帯グラフ化
@@ -351,7 +352,7 @@ plt.rcParams["font.family"] = "MS Gothic"
 # 行ごとの百分率に変換する
 pivot_orders_df5 = pivot_orders_df4.div(pivot_orders_df4['Total'], axis=0).mul(100)  # .round(2) 四捨五入
 # df.drop("b", axis=1)
-# pivot_orders_df5.iloc[:50,].drop("Total", axis=1).plot.bar(stacked=True)  
+# pivot_orders_df5.iloc[:50,].drop("Total", axis=1).plot.bar(stacked=True)
 # .iloc[:12,] 12機関目までにする
 # 判例の位置調整　https://qiita.com/matsui-k20xx/items/291400ed56a39ed63462
 pivot_orders_df5.iloc[:50,].drop("Total", axis=1)\
@@ -384,13 +385,14 @@ pivot_orders_df5.hist(ax=ax)
 fig.savefig("資料タイプ別百分率各列のヒストグラム.png")
 # 6.7s
 ```
+
 ![資料タイプ別百分率各列のヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E8%B3%87%E6%96%99%E3%82%BF%E3%82%A4%E3%83%97%E5%88%A5%E7%99%BE%E5%88%86%E7%8E%87%E5%90%84%E5%88%97%E3%81%AE%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
 
 ## 紀要の構成比でヒストグラムを作成
 
 ```python
 # 紀要['departmental bulletin paper']の個数でソートしたものを kiyou とする
-kiyou = pivot_orders_df5.sort_values(by='departmental bulletin paper', ascending=False) 
+kiyou = pivot_orders_df5.sort_values(by='departmental bulletin paper', ascending=False)
 # 紀要が90%以上　>90 のもの
 print(kiyou['departmental bulletin paper'][kiyou['departmental bulletin paper'] > 99])  #  == 100
 # kiyou['departmental bulletin paper'].hist(bins=20) # histogramを出すだけならこちらでもよい
@@ -403,42 +405,48 @@ plt.xlabel('percentage')
 plt.ylabel('機関数')
 # 目盛りを変更
 plt.ylim(0, 190)
-plt.xticks([0,10,20,30,40,50,60,70,80,90,100]) 
+plt.xticks([0,10,20,30,40,50,60,70,80,90,100])
 # ヒストグラムを描画する（表示する幅は50〜100）、階級数（棒の数）は10
 plt.hist(kiyou['departmental bulletin paper'], range=(00, 100), bins=10)
 # plt.hist(kiyou['journal article'], range=(00, 100), bins=10)
 ```
+
 ![紀要の構成比でヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E7%B4%80%E8%A6%81%E3%81%AE%E7%99%BE%E5%88%86%E7%8E%87%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
 
 ## 紀要の度数分布表
-紀要のみ（100%）の機関が5%（32機関）
-紀要の構成比で80%以上の機関が43%以上（268機関）
+
+紀要のみ（100%）の機関が 5%（32 機関）
+紀要の構成比で 80%以上の機関が 43%以上（268 機関）
+
 ```python
 x = list(kiyou['departmental bulletin paper'])
 Frequency_Distribution(x, None)
 ```
-|階級   |   階級値   |	度数   |	累積度数   |	相対度数   |	累積相対度数|
-|---|---|---|---|---|---|
-|0.0以上10.0未満   |	5.0   |	50   |	50   |	0.081699   |	0.081699|
-|10.0以上20.0未満   |	15.0   |	21   |	71   |	0.034314   |	0.116013|
-|20.0以上30.0未満   |	25.0   |	26   |	97   |	0.042484   |	0.158497|
-|30.0以上40.0未満   |	35.0   |	35   |	132   |	0.057190   |	0.215686|
-|40.0以上50.0未満   |	45.0   |	35   |	167   |	0.057190   |	0.272876|
-|50.0以上60.0未満   |	55.0   |	44   |	211   |	0.071895   |	0.344771|
-|60.0以上70.0未満   |	65.0   |	69   |	280   |	0.112745   |	0.457516|
-|70.0以上80.0未満   |	75.0   |	64   |	344   |	0.104575   |	0.562092|
-|80.0以上90.0未満   |	85.0   |	85   |	429   |	0.138889   |	0.700980|
-|90.0以上100.0未満   |	95.0   |	151   |	580   |	0.246732   |	0.947712|
-|100.0以上110.0未満   |	105.0   |	32   |	612   |	0.052288   |	1.000000|
+
+| 階級                  | 階級値 | 度数 | 累積度数 | 相対度数 | 累積相対度数 |
+| --------------------- | ------ | ---- | -------- | -------- | ------------ |
+| 0.0 以上 10.0 未満    | 5.0    | 50   | 50       | 0.081699 | 0.081699     |
+| 10.0 以上 20.0 未満   | 15.0   | 21   | 71       | 0.034314 | 0.116013     |
+| 20.0 以上 30.0 未満   | 25.0   | 26   | 97       | 0.042484 | 0.158497     |
+| 30.0 以上 40.0 未満   | 35.0   | 35   | 132      | 0.057190 | 0.215686     |
+| 40.0 以上 50.0 未満   | 45.0   | 35   | 167      | 0.057190 | 0.272876     |
+| 50.0 以上 60.0 未満   | 55.0   | 44   | 211      | 0.071895 | 0.344771     |
+| 60.0 以上 70.0 未満   | 65.0   | 69   | 280      | 0.112745 | 0.457516     |
+| 70.0 以上 80.0 未満   | 75.0   | 64   | 344      | 0.104575 | 0.562092     |
+| 80.0 以上 90.0 未満   | 85.0   | 85   | 429      | 0.138889 | 0.700980     |
+| 90.0 以上 100.0 未満  | 95.0   | 151  | 580      | 0.246732 | 0.947712     |
+| 100.0 以上 110.0 未満 | 105.0  | 32   | 612      | 0.052288 | 1.000000     |
 
 ## 雑誌論文
-- 雑誌論文の構成比率が100%の機関（桃山学院教育大学）は、機関全体で全3件でかつ、中身は紀要のようだ
+
+- 雑誌論文の構成比率が 100%の機関（桃山学院教育大学）は、機関全体で全 3 件でかつ、中身は紀要のようだ
 - 98%の國學院大學は、学内学会的なものを雑誌論文としている
 - 97%の国立社会保障・人口問題研究所は、自機関発行の雑誌、working paper を含んでいる
-- 沖縄科学技術大学院大学は、いわゆる典型的なGreen OA論文が多い
+- 沖縄科学技術大学院大学は、いわゆる典型的な Green OA 論文が多い
+
 ```python
 # 雑誌論文['journal article']の個数でソートしたものを joua とする
-joua = pivot_orders_df5.sort_values(by='journal article', ascending=False) 
+joua = pivot_orders_df5.sort_values(by='journal article', ascending=False)
 # 雑誌論文が90%以上　>90 のもの
 print(joua['journal article'][joua['journal article'] >= 90])  #  == 100
 # '雑誌論文の百分率でヒストグラム'
@@ -450,13 +458,15 @@ plt.xlabel('percentage')
 plt.ylabel('機関数')
 # 目盛りを変更
 plt.ylim(0, 190)
-plt.xticks([0,10,20,30,40,50,60,70,80,90,100]) 
+plt.xticks([0,10,20,30,40,50,60,70,80,90,100])
 # ヒストグラムを描画する（表示する幅は0〜100）、階級数（棒の数）は10
 plt.hist(joua['journal article'], range=(00, 100), bins=10)
 ```
+
 ![雑誌論文構成比のヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E9%9B%91%E8%AA%8C%E8%AB%96%E6%96%87%E7%99%BE%E5%88%86%E7%8E%87%E3%81%AE%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
 
 ## 構成比率（百分率）で階層的クラスタリング
+
 ```python
 # 構成比率（百分率）で階層的クラスタリング
 # 【python】scipyで階層型クラスタリングするときの知見まとめ
@@ -499,17 +509,19 @@ def clustering_fcluster():
         cluster_list.append(pivot_orders_df2.index[v])
         # print(k,v) # v は行番号のリスト
     return cluster_list
-    
+
 if __name__ == "__main__":
     cluster_list = clustering_fcluster()
     print(cluster_list)
 ```
 
 ## 構成比率で階層的クラスタリングした結果ごとに帯グラフを描く
-- 階層的クラスタ別構成比_6' は学位論文と紀要が半々ぐらいのクラスターか？
-- 階層的クラスタ別構成比_7' はデータセットが多めのクラスター
+
+- 階層的クラスタ別構成比\_6' は学位論文と紀要が半々ぐらいのクラスターか？
+- 階層的クラスタ別構成比\_7' はデータセットが多めのクラスター
 - それ以外の多数のところはそれほどクラスターに特徴がないように見える
 - 個数１のクラスタはそれぞれ特徴はある。
+
 ```python
 # コンテンツ数上位50機関で構成比率の帯グラフ化
 from matplotlib import rcParams
@@ -518,13 +530,16 @@ for i, clust in enumerate(cluster_list):
    pivot_orders_df5.loc[clust].iloc[:50,].drop("Total", axis=1)\
     .plot(kind='bar', stacked=True, figsize=(10,5), width=1, linewidth=0,title='階層的クラスタ別構成比_'+str(i),)\
     .legend(bbox_to_anchor=(0, -0.5), loc='upper left', borderaxespad=0, fontsize=18)
-   
+
 ```
+
 ![構成比率で階層的クラスタリング帯グラフ](https://github.com/wonox/irdbscraping/blob/main/%E9%9A%8E%E5%B1%A4%E7%9A%84%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E5%B8%AF%E3%82%B0%E3%83%A9%E3%83%95.png)
 
 ## 元の数値（百分率でなく）各列のヒストグラムを作成
+
 資料タイプ別数値の各列でヒストグラムを作成
 まったく特徴がでないことが分かる。
+
 ```python
 # 各列のヒストグラムを作成
 # pivot_orders_df4 は実数値でソート済み、合計列が右端にある
@@ -534,10 +549,52 @@ fig3, ax = plt.subplots(figsize=(30,10))
 pivot_orders_df4.hist(ax=ax)
 fig3.savefig("元の数値の各列のヒストグラム.png")
 ```
+
 ![元の数値の各列のヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E5%85%83%E3%81%AE%E6%95%B0%E5%80%A4%E3%81%AE%E5%90%84%E5%88%97%E3%81%AE%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
 
+## ペアプロット図（散布図行列）
 
+- とりあえず、紀要と雑誌論文の散布図を作成
+- 全体の様子を見るため、ペアプロット図（散布図行列）を作成
+- 全資源タイプ 35×35 だと、細かすぎるので、値の少ない資源タイプを削除（drop）
 
+```python
+# 紀要と雑誌論文の散布図を作成
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+plt.rcParams["font.family"] = "MS Gothic"
+plt.rcParams['font.size'] = 10
+pivot_orders_df5.plot.scatter(x='departmental bulletin paper', y='journal article')
+```
+
+![紀要と雑誌論文の散布図](https://github.com/wonox/irdbscraping/blob/main/%E7%B4%80%E8%A6%81%E3%81%A8%E9%9B%91%E8%AA%8C%E8%AB%96%E6%96%87%E3%81%AE%E6%95%A3%E5%B8%83%E5%9B%B3.png)
+
+```python
+# 各列の合計行を追加
+pivot_orders_df6 = pd.concat([pivot_orders_df5,pd.DataFrame(pivot_orders_df5.sum(axis=0),columns=['GTotal']).T])
+# GTotalが10より小さいもののカラム名をリストで取得して、dropする
+# pivot_orders_df6[pivot_orders_df6.loc[['GTotal'] ,:] > 1].dropna(how='all', axis=1).columns
+pivot_orders_df7 = pivot_orders_df6.drop(pivot_orders_df6[pivot_orders_df6.loc[['GTotal'] ,:] < 10].dropna(how='all', axis=1).columns, axis=1)
+# 紀要の列のみをソート
+# print(pivot_orders_df7.sort_values("departmental bulletin paper", ascending=False)['departmental bulletin paper'])
+# 紀要 100%の行を抽出
+kiyou = (pivot_orders_df7['departmental bulletin paper'] == 100)
+# 紀要 100%の個数
+kiyou.sum()
+# print(kiyou[kiyou])
+```
+
+```python
+# ペアプロット図（散布図行列）
+# 35×35で散布行列図を描くと細かすぎ、7分くらいかかる。
+# import pandas as pd
+import seaborn as sns
+pg = sns.pairplot(pivot_orders_df7.iloc[0:612,0:13])
+print(type(pg))
+# 14ｘ14で6m9.1sかかった
+```
+
+![ペアプロット図（散布図行列）](https://github.com/wonox/irdbscraping/blob/main/%E3%82%AB%E3%83%A9%E3%83%A0%E3%82%92%E7%B5%9E%E3%81%A3%E3%81%A6%E6%95%A3%E5%B8%83%E8%A1%8C%E5%88%97%E5%9B%B3.png)
 
 # ソースなど
 
