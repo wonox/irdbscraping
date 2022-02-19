@@ -1,11 +1,25 @@
 # IRDB からスクレイピングして PANDAS で機関リポジトリ登録コンテンツの分析をする
+# 目次
+[概要](# 概要)
+[スクレイピング](# スクレイピング)
+[データ加工](# データ加工)
+[資源タイプ](# 資源タイプ)
+[DataFrameの作製](# DataFrameの作製)
+[デンドログラム](# デンドログラム)
+[階層型クラスタリング](# 階層型クラスタリング)
+[合計の概要](# 合計の概要)
+[ヒストグラム](# ヒストグラム)
+[度数分布表](# 度数分布表)
+[構成比率で階層的クラスタリングした結果ごとに帯グラフを描く](# 構成比率で階層的クラスタリングした結果ごとに帯グラフを描く)
+[ペアプロット図（散布図行列）](# ペアプロット図（散布図行列）)
+[科研費採択数と掛け合わせてみる](# 科研費採択数と掛け合わせてみる)
 
-## 概要
-
+# 概要
+日本の機関リポジトリの傾向を見てみるため、
 IRDB（https://irdb.nii.ac.jp/）から、JPCOAR加盟機関のデータをスクレイピングして、PANDASで若干の分析を行う。
 JPCOAR 加盟機関は、https://jpcoar.repo.nii.ac.jp/page/40 から抽出し、「図書館」などの文字列を削除し、機関名を抽出
 
-## スクレイピング
+# スクレイピング
 
 機関名をハードコーディングしたくなかったので、機関名を羅列したテキストファイルを読み込んで配列に代入することにした。
 
@@ -34,7 +48,7 @@ with open("inst_array.pkl","wb") as f:
 with open('inst_array.pkl', 'rb') as f:
     institutions = pickle.load(f)
 
-## 必要なライブラリのインポート ————–
+# 必要なライブラリのインポート ————–
 # スクレイピング
 from bs4 import BeautifulSoup
 import time
@@ -89,7 +103,7 @@ if __name__ == "__main__":
     type_list = main()
 ```
 
-## データ加工
+# データ加工
 
 機関名['institutions']を index とし、資源タイプ['typename']ごとの数を表にする。
 
@@ -150,7 +164,7 @@ pivot_orders_df = pd.read_pickle('./pivot_orders_df.pkl.gz', compression='gzip')
 語彙 conference paper data paper departmental bulletin paper editorial journal article newspaper periodical review article software paper article book book part cartographic material map conference object conference proceedings conference poster dataset interview image still image moving image video lecture patent internal report report research report technical report policy report report part working paper data management plan sound thesis bachelor thesis master thesis doctoral thesis interactive resource learning object manuscript musical notation research proposal software technical documentation workflow other
 ```
 
-# DataFrame の作製
+# DataFrameの作製
 
 ```python
 # 'article == 113164'は総計の数字。IRDBは検索該当なしだと全件になってしまうので。
@@ -163,9 +177,9 @@ pivot_orders_df_2index  # 削除するindexのlist
 pivot_orders_df2 = pivot_orders_df.drop(index=pivot_orders_df_2index)
 ```
 
-# 試しに階層型クラスタリングして、デンドログラムを書いてみる。
-
-あまり役に立たない？
+# デンドログラム
+- 試しに階層型クラスタリングして、デンドログラムを書いてみる。
+- あまり役に立たない？
 ![デンドログラム](https://raw.githubusercontent.com/wonox/irdbscraping/main/output_dendrogram.png)
 
 ```python
@@ -180,7 +194,7 @@ dendrogram(linkage_result, labels=pivot_orders_df2.index)
 plt.show()
 ```
 
-## 階層型クラスタリング
+# 階層型クラスタリング
 
 ユークリッド距離とウォード法または群平均法を使用してクラスタリングしてみる
 average:群平均法：クラスター分析で使用される、クラスター間の距離算出方法の一つ。 2 つのクラスター間で可能な全ての組み合わせにおける非類似度の平均からクラスターを形成する方法。
@@ -224,7 +238,7 @@ if __name__ == "__main__":
     clustering_fcluster()
 ```
 
-### 結果
+## 結果
 
 ```
 3 Index(['お茶の水女子大学', 'こども教育宝仙大学', 'つくば国際大学', 'びわこ成蹊スポーツ大学', 'ものつくり大学',
@@ -255,7 +269,7 @@ filename = './irdbscraping_' + now.strftime('%Y%m%d_%H%M%S') + '.xlsx'
 pivot_orders_df4.to_excel('./'+filename, sheet_name='filename')
 ```
 
-## 合計の概要を見てみる
+# 合計の概要
 
 ```python
 print(pivot_orders_df4.describe(percentiles=[0.2, 0.4, 0.6, 0.8,0.95]).loc[:,"Total"])
@@ -322,7 +336,7 @@ class_width = None #を指定すると自動
 Frequency_Distribution(x,class_width)
 ```
 
-## 度数分布表
+# 度数分布表
 
 | 階級                    | 階級値   | 度数 | 累積度数 | 相対度数 | 累積相対度数 |
 | ----------------------- | -------- | ---- | -------- | -------- | ------------ |
@@ -515,7 +529,7 @@ if __name__ == "__main__":
     print(cluster_list)
 ```
 
-## 構成比率で階層的クラスタリングした結果ごとに帯グラフを描く
+# 構成比率で階層的クラスタリングした結果ごとに帯グラフを描く
 
 - 階層的クラスタ別構成比\_6' は学位論文と紀要が半々ぐらいのクラスターか？
 - 階層的クラスタ別構成比\_7' はデータセットが多めのクラスター
@@ -552,7 +566,7 @@ fig3.savefig("元の数値の各列のヒストグラム.png")
 
 ![元の数値の各列のヒストグラム](https://github.com/wonox/irdbscraping/blob/main/%E5%85%83%E3%81%AE%E6%95%B0%E5%80%A4%E3%81%AE%E5%90%84%E5%88%97%E3%81%AE%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0.png)
 
-## ペアプロット図（散布図行列）
+# ペアプロット図（散布図行列）
 
 - とりあえず、紀要と雑誌論文の散布図を作成
 - 全体の様子を見るため、ペアプロット図（散布図行列）を作成
@@ -596,7 +610,7 @@ print(type(pg))
 
 ![ペアプロット図（散布図行列）](https://github.com/wonox/irdbscraping/blob/main/%E3%82%AB%E3%83%A9%E3%83%A0%E3%82%92%E7%B5%9E%E3%81%A3%E3%81%A6%E6%95%A3%E5%B8%83%E8%A1%8C%E5%88%97%E5%9B%B3.png)
 
-## 科研費採択数と掛け合わせてみる
+# 科研費採択数と掛け合わせてみる
 - 別に用意した科研費採択数のDFを読み込み
    - https://github.com/wonox/irdbscraping/blob/main/kakenhi.ipynb
 - 2つのDataFrameをindexをキーにマージ
