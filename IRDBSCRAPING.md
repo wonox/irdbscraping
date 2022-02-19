@@ -596,6 +596,28 @@ print(type(pg))
 
 ![ペアプロット図（散布図行列）](https://github.com/wonox/irdbscraping/blob/main/%E3%82%AB%E3%83%A9%E3%83%A0%E3%82%92%E7%B5%9E%E3%81%A3%E3%81%A6%E6%95%A3%E5%B8%83%E8%A1%8C%E5%88%97%E5%9B%B3.png)
 
+## 科研費採択数と掛け合わせてみる
+- 別に用意した科研費採択数のDFを読み込み
+   - https://github.com/wonox/irdbscraping/blob/main/kakenhi.ipynb
+- 2つのDataFrameをindexをキーにマージ
+
+```python
+# 百分率pivot_orders_df5 と科研費採択数をマージしても無意味だった
+kakenhimerge = pd.merge(pivot_orders_df3, kakenhidf, left_index=True, right_index=True, how='inner')
+kakenhimerge['採択件数（件）'] = pd.to_numeric(kakenhimerge['採択件数（件）'], errors='coerce') # .astype(str).str.replace(',', '')
+kakenhisort = kakenhimerge.sort_values(by=['採択件数（件）','Total'], ascending=True)
+# pivot_orders_df4 = pivot_orders_df3.sort_values(by='Total', ascending=False) 
+kakenhisort
+# 合計と科研費採択数の散布図を作成 Total	採択件数（件）
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+plt.rcParams["font.family"] = "MS Gothic"
+plt.rcParams['font.size'] = 10
+# fig, ax = plt.subplots(figsize=(30,10))
+# pivot_orders_df4 は 元のDataFrame
+kakenhisort.plot.scatter(x='採択件数（件）', y='Total')
+```
+
 # ソースなど
 
 https://github.com/wonox/irdbscraping/blob/main/irdbscraping.ipynb
