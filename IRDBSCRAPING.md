@@ -616,7 +616,12 @@ plt.rcParams['font.size'] = 10
 # fig, ax = plt.subplots(figsize=(30,10))
 # pivot_orders_df4 は 元のDataFrame
 kakenhisort.plot.scatter(x='採択件数（件）', y='Total')
+plt.savefig("IRDBコンテンツ数と科研費採択数の散布図.png")
+plt.show()
+plt.close('all')
 ```
+!("IRDBコンテンツ数と科研費採択数の散布図)[https://github.com/wonox/irdbscraping/blob/main/IRDB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E6%95%B0%E3%81%A8%E7%A7%91%E7%A0%94%E8%B2%BB%E6%8E%A1%E6%8A%9E%E6%95%B0%E3%81%AE%E6%95%A3%E5%B8%83%E5%9B%B3.png]
+
 
 # ソースなど
 
