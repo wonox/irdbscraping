@@ -5478,9 +5478,6 @@ $\langle$\nobreak{#2}\nobreak$\rangle$}
 
 \def\ndash{{\usefont{OT1}{cmr}{bx}{n}\selectfont\leavevmode \raise.1zh\hbox {--}}}
 
-
-
-
 %% pdflatex papersize v1.6
 \@ifundefined{pdfpagewidth}
 {\relax}%{\special{papersize=\paperwidth,\paperheight}}
@@ -5488,7 +5485,39 @@ $\langle$\nobreak{#2}\nobreak$\rangle$}
 \pdfpageheight=\paperheight
 }
 
-
+\usepackage{latexsym,listings,jvlisting,jlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
+%\usepackage[hyphens]{url}
+%ここからソースコードの表示に関する設定
+% https://qiita.com/ta_b0_/items/2619d5927492edbb5b03
+% https://thvinmei.wordpress.com/2013/10/18/latex%E3%81%ABlistings%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6c%E3%82%92%E8%B2%BC%E3%82%8B%E3%81%A8%E3%81%8D%E3%81%AB%E4%BD%BF%E3%81%A3%E3%81%9F%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%81%AE%E3%83%A1/
+% https://qiita.com/ocian/items/28bbbec6c44b9b6b44c4
+%キャプション名「ソースコードn」を「プログラムn」に変えるには，
+% \begin{document}の前に\renewcommand{\lstlistingname}{プログラム}と書く
+\renewcommand{\lstlistingname}{Program}
+\lstset{
+  language={c},%言語の設定
+  basicstyle={\small},
+  % backgroundcolor={\color[gray]{.85}},%背景色ｓｓｓ
+  basicstyle=\ttfamily,%標準書体
+  commentstyle={\color{magenta}},%コメント書体
+  stringstyle={\color{red}},%文字列リテラルの書体
+  keywordstyle={\color[rgb]{0,0,1}},
+  %keywordstyle=\bfseries,
+  frame=tblr,%フレームの設定
+  frameround=ftff,%フレーム角の形状
+  framesep=5pt,%本文からframeまでの間隔
+  xleftmargin=3zw,
+  showstringspaces=false,
+  numbers=left,%プログラムソースの行番号の位置
+  stepnumber=1,%stepnumberで設定した値おきに行番号が表示されます
+  numberstyle=\scriptsize,%行番号の文字サイズ
+  %numbersep={},%行番号と本文との間隔（デフォルトは10pt)
+  breaklines=true,%文が行の最後まで行ったとき改行するかしないかの設定(デフォルトはfalse)
+  %breakindent={},%改行時のインデント量（デフォルトは20pt)
+  tabsize=3,
+  captionpos=b
+}
+%ここまでソースコードの表示に関する設定
 
 \endinput
 
