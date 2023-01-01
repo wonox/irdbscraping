@@ -31,13 +31,13 @@
 %%%%%% Document Styles %%%%%%
 %\newif\ifDS@printer \DS@printerfalse
 \newif\ifDS@english \DS@englishfalse
-\newif\ifDS@technote \DS@technotefalse
+%- \newif\ifDS@technote \DS@technotefalse
 \newif\ifDS@preface \DS@prefacefalse
 \newif\ifDS@techrep \DS@techrepfalse
 \newif\ifDS@sigrecommended \DS@sigrecommendedfalse
-\newif\ifDS@invited \DS@invitedfalse
-\newif\ifDS@online \DS@onlinefalse
-\newif\ifDS@draft \DS@draftfalse
+%- \newif\ifDS@invited \DS@invitedfalse
+%- \newif\ifDS@online \DS@onlinefalse
+%- \newif\ifDS@draft \DS@draftfalse
 %======================
 \newif\ifDS@PRO \DS@PROfalse
 \newif\ifDS@ACS \DS@ACSfalse
@@ -51,13 +51,13 @@
 \newif\ifDS@DCON \DS@DCONfalse % v2.0
 %======================
 \newif\ifDS@JIP \DS@JIPfalse
-\newif\ifDS@Data \DS@Datafalse
-\newif\ifDS@Survey \DS@Surveyfalse
-\newif\ifDS@Research \DS@Researchfalse
-\newif\ifDS@Short \DS@Shortfalse
-\newif\ifDS@systems \DS@systemsfalse
-\newif\ifDS@services \DS@servicesfalse
-\newif\ifDS@devices \DS@devicesfalse
+%- \newif\ifDS@Data \DS@Datafalse
+%- \newif\ifDS@Survey \DS@Surveyfalse
+%- \newif\ifDS@Research \DS@Researchfalse
+%- \newif\ifDS@Short \DS@Shortfalse
+%- \newif\ifDS@systems \DS@systemsfalse
+%- \newif\ifDS@services \DS@servicesfalse
+%- \newif\ifDS@devices \DS@devicesfalse
 %======================
 \newif\ifDS@abstract \DS@abstractfalse
 \newif\ifDS@EEE \DS@EEEfalse
@@ -69,7 +69,7 @@
 \newif\ifDS@noauthor \DS@noauthorfalse
 
 %% v1.4
-\newif\ifDS@system \DS@systemfalse
+%- \newif\ifDS@system \DS@systemfalse
 
 
 %% v1.5
@@ -112,14 +112,14 @@
 %%
 \DeclareOption{JIP}{\DS@englishtrue\DS@JIPtrue\def\@type{JIP}\DS@EEEfalse}
 
-\DeclareOption{Data}{\DS@Datatrue\def\@type{Data}\def\@Mtype{Data}\DS@EEEfalse}
-\DeclareOption{Survey}{\DS@Surveytrue\def\@type{Survey}\def\@Mtype{Survey}\DS@EEEfalse}
-\DeclareOption{Research}{\DS@Researchtrue\def\@type{Research}\def\@Mtype{Research}\DS@EEEfalse}
-\DeclareOption{Short}{\DS@Shorttrue\def\@type{Short}\def\@Mtype{Short}\DS@EEEfalse}
+%- \DeclareOption{Data}{\DS@Datatrue\def\@type{Data}\def\@Mtype{Data}\DS@EEEfalse}
+%- \DeclareOption{Survey}{\DS@Surveytrue\def\@type{Survey}\def\@Mtype{Survey}\DS@EEEfalse}
+%- \DeclareOption{Research}{\DS@Researchtrue\def\@type{Research}\def\@Mtype{Research}\DS@EEEfalse}
+%- \DeclareOption{Short}{\DS@Shorttrue\def\@type{Short}\def\@Mtype{Short}\DS@EEEfalse}
 
 \DeclareOption{abstract}{\DS@abstracttrue\def\@Mtype{abstract}\DS@EEEfalse}
 
-\DeclareOption{systems}{\DS@systemstrue\def\@Mtype{systems}\DS@EEEfalse}
+%- \DeclareOption{systems}{\DS@systemstrue\def\@Mtype{systems}\DS@EEEfalse}
 \DeclareOption{services}{\DS@servicestrue\def\@Mtype{services}\DS@EEEfalse}
 \DeclareOption{devices}{\DS@devicestrue\def\@Mtype{devices}\DS@EEEfalse}
 
@@ -133,7 +133,7 @@
 \DeclareOption{noauthor}{\DS@noauthortrue}
 
 %% v1.4
-\DeclareOption{system}{\DS@systemtrue\def\@Mtype{system}\DS@EEEfalse}
+%- \DeclareOption{system}{\DS@systemtrue\def\@Mtype{system}\DS@EEEfalse}
 
 %% v1.5
 \DeclareOption{Express}{\DS@Expresstrue\def\@Mtype{Express}\DS@EEEfalse}
@@ -171,7 +171,7 @@
 \def\@type{DAM}%
 \def\@Mtype{DAM}%
 \DS@EEEtrue%
-\ifDS@systems\def\@Mtype{systems}\fi
+%- \ifDS@systems\def\@Mtype{systems}\fi
 \ifDS@services\def\@Mtype{services}\fi
 \ifDS@devices\def\@Mtype{devices}\fi
 \ifDS@Research\def\@Mtype{Research}\fi
@@ -4615,10 +4615,10 @@ Keywords:\hskip.5em%
 
 
 \let\Ediname@TOD\Ediname@DAM
-\let\Ediname@Data\Ediname@TBIO
-\let\Ediname@Survey\Ediname@TBIO
-\let\Ediname@Research\Ediname@CVA
-\let\Ediname@Short\Ediname@SLDM
+%- \let\Ediname@Data\Ediname@TBIO
+%- \let\Ediname@Survey\Ediname@TBIO
+%- \let\Ediname@Research\Ediname@CVA
+%- \let\Ediname@Short\Ediname@SLDM
 
 
 
