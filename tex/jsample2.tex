@@ -6,6 +6,8 @@
 \usepackage{float}
 \usepackage{url}
 \usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{tabularx} 
 
 \def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
 \def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
@@ -31,7 +33,7 @@
 \author{小野 亘}{Wataru, ONO}{utokyo}[ono.wataru@mail.u-tokyo.ac.jp]
 
 \begin{abstract}
-	本稿は，NII 等をまとめたものであるよ．
+	本稿は，NII 等をまとめたものであるよね．
 \end{abstract}
 
 
@@ -55,15 +57,19 @@
 本稿では，国立情報学（NII）のIRDBから統計データを取得し、
 日本の機関リポジトリに登録されたコンテンツの種別(資源タイプ）の分析を行い、
 その側面から、日本の機関リポジトリの特徴を明らかにするものである。
-今回は、Python 3.10.7、Pandas 1.5.2 を使用した。
 
 \footnotetext{https://irdb.nii.ac.jp/}
 
-%=====================
-
 %2
+\section{方法}
+今回は、Python 3.10.7、Pandas 1.5.2 を使用した。
+
+%3
+\section{結論}
+
+%4
 \section{データの読み込み、前処理}
-%2.1
+%4.1
 \subsection{準備}
 
 NIIのIRDBの「コンテンツ統計（全体）」から、統計データを取得し、
@@ -72,7 +78,7 @@ NIIのIRDBの「コンテンツ統計（全体）」から、統計データを�
 	\|https://irdb.nii.ac.jp/statistics/all|
 \end{quote}
 から、「統計ファイル（全機関の機関別統計）」をクリックし、ダウンロードする。
-今年度（2022年度）であれば、2022.csv というファイルが取得できるので、それを
+今年度（2023年度）であれば、2023.csv というファイルが取得できるので、それを
 Pandas のDataFrameに読み込む
 
 上記で作ったdf2205iを全件数と、本文ありとに分け、差分（メタデータのみ）を取り出し、
@@ -83,12 +89,12 @@ Pandas のDataFrameに読み込む
 	df2205_all = df2205i.iloc[:,17:64]
 	df2205_honbun = df2205i.iloc[:,75:]
 	df2205_sabun = df2205_all - df2205_honbun
-	\end{lstlisting}
+\end{lstlisting}
 
 
 %2.1
 \subsection{資源タイプの集約}
-機関リポジトリには、コンテンツの種類を表す47個の資源タイプのいずれかを付すことになっているが、以下大項目13個にまとめる。
+機関リポジトリには、コンテンツの種類を表す47個の資源タイプのいずれかを付すことになっているが、以下の大項目13個にまとめる。
 
 \begin{Enumerate}
 	\item \|departmental bulletin paper|: 紀要
@@ -108,22 +114,35 @@ Pandas のDataFrameに読み込む
 
 JPCOARスキーマガイドラインの資源タイプ語彙別表
 \footnote{\url{https://schema.irdb.nii.ac.jp/ja/resource_type_vocabulary}}
-で示されている大項目は12項目だが、Articleの内数である、
-departmental bulletin paper（紀要）を別項目とし、全部で13項目とした。
+で示されている大項目は12項目だが、日本の機関リポジトリは、紀要に一つの特徴があることは明らかなので、
+Articleの内数である、departmental bulletin paper（紀要）を別項目とし、全部で13項目とした。
 
+ここで作成したデータフレームを
+
+\begin{lstlisting}[language=Python,breaklines]
+	pd.set_option('display.float_format', lambda x: '%.1f' % x)
+	# 小数点二位で切り捨て
+	df2205_all_d.describe()
+\end{lstlisting}
+
+にて確認すると、
+表\ref{table:alld}のとおりとなる。
 
 %3
 \section{主成分分析}
 \label{PCA}
 前記、前処理の時点で、13次元のデータであり、それを可視化することは不可能である。
 そこで、主成分分析を用いて情報をなるべく失うことなく2次元へと次元圧縮をし、データの可視化をおこなってみる。
-主成分分析（principal component analysis）とは相関のある多数の変数から相関のない少数で全体のばらつきを最
-もよく表す主成分と呼ばれる変数を合成する多変量解析の一手法で、データの次元を削減するために用いられる。
+主成分分析（principal component analysis）とは、
+相関のある多数の変数から、相関のない少数で全体のばらつきを最もよく表す、
+主成分と呼ばれる変数を合成する多変量解析の一手法で、
+データの次元を削減するために用いられる。
 
 %3.1
 \subsection{主成分分析の前処理}
-主成分分析の前処理として、標準偏差が小さい(全体のバラツキが小さいということ、
-つまり、測定値の分布が平均値の周りに集まっているということ)列を削除しておく。
+主成分分析の前処理として、標準偏差が小さい列を削除しておく。
+標準偏差が小さい、ということは、全体のバラツキが小さいということ、
+つまり、測定値の分布が平均値の周りに集まっているということを表している。
 
 \begin{lstlisting}[language=Python,breaklines, caption=,label=fuga]
 	std0 = (df2205_all_d.std(axis=0) > 1)
@@ -153,10 +172,9 @@ BookとThesisの2つに75\%は第三四分位数に数字があるのみであ�
 75パーセンタイル（第三四分位数）とよばれる。”
 \footnote{\url{https://bellcurve.jp/statistics/glossary/1919.html}}
 であり、
-紀要の場合全体の3/4の位置で129件ありますが、図書は1/4の位置で2件、
-学位論文は1/4の位置で20件しかないことが分かります。
+紀要の場合全体の3/4の位置で129件あるが、図書は1/4の位置で2件、
+学位論文は1/4の位置で20件しかないことが分かる。
 紀要を除けば、他の資源タイプはゼロ件のリポジトリが圧倒的に多いことが推測できる。
-
 
 このdf2205\_all\_dstdで箱ひげ図を描いてみると、図\ref{fig:box1}のようになる。
 
@@ -233,7 +251,7 @@ IRDBのデータから機関リポジトリの特徴を見るためには、量�
 \end{lstlisting}
 
 結果は \ref{table:std1} のとおり、
-平均が0、標準偏差が1となるように変換されていることが分かります。
+平均が0、標準偏差が1となるように変換されていることが分かる。
 
 %3.3
 \subsection{主成分分析}
@@ -268,6 +286,31 @@ pd.DataFrame(pca_row, columns=["PC{}".format(x + 1)
 	\twocolcaption{df2205\_all\_dstdの箱ひげ図
 	＜大き目な図これ[ｂ]だとボトムに図が表示される＞}
 \end{figure}
+
+%--------------
+\begin{table}[tb]
+	\caption{df2205\_all\_d.describe\(\)}
+	\ecaption{df2205\_all\_d.describe\(\)}
+	\label{table:alld}
+	\hbox to\hsize{
+		\begin{tabular}{p{0.7cm}p{0.7cm}|p{0.7cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}}
+		% \begin{tabular}{lrrrrrrrrrrrrr}
+
+			&    Kiyou &  Article &    Book &  Cartographic Material &  Conference \par object &  Dataset &  Image &  Lecture &  Patent &  Report &  Sound &  Thesis &  Multiple \\\hline
+
+			count &    792.0 &    792.0 &   792.0 &                  792.0 &              792.0 &    792.0 &  792.0 &    792.0 &   792.0 &   792.0 &  792.0 &   792.0 &     792.0 \\
+			mean  &   2011.5 &    249.6 &    78.3 &                    0.0 &               93.8 &    112.7 &    6.1 &      0.4 &     0.0 &     0.0 &    0.0 &   217.2 &       0.0 \\
+			std   &   5952.6 &   5051.3 &   643.6 &                    0.4 &             1151.1 &   1948.2 &  170.3 &     10.4 &     0.0 &     0.0 &    0.2 &  1201.0 &       0.0 \\
+			min   &      0.0 &      0.0 &     0.0 &                    0.0 &                0.0 &      0.0 &    0.0 &      0.0 &     0.0 &     0.0 &    0.0 &     0.0 &       0.0 \\
+			25\%   &    128.0 &      0.0 &     0.0 &                    0.0 &                0.0 &      0.0 &    0.0 &      0.0 &     0.0 &     0.0 &    0.0 &     0.0 &       0.0 \\
+			50\%   &    482.5 &      0.0 &     0.0 &                    0.0 &                0.0 &      0.0 &    0.0 &      0.0 &     0.0 &     0.0 &    0.0 &     0.0 &       0.0 \\
+			75\%   &   1517.0 &      0.0 &     2.0 &                    0.0 &                0.0 &      0.0 &    0.0 &      0.0 &     0.0 &     0.0 &    0.0 &    19.0 &       0.0 \\
+			max   & 123440.0 & 140940.0 & 12907.0 &                   10.0 &            25743.0 &  48965.0 & 4792.0 &    294.0 &     0.0 &     0.0 &    7.0 & 17369.0 &       0.0 \\
+			\end{tabular}
+	}
+\end{table}
+%--------------
+
 
 \begin{table}[tb]
 	\caption{df2205\_all\_dstd.describe\(\)}
@@ -342,81 +385,6 @@ pd.DataFrame(pca_row, columns=["PC{}".format(x + 1)
 \end{figure}
 
 
-%4.5
-\subsection{図}
-
-
-1段の幅におさまる図は，
-\figref{fig:single} の形式で指定する．
-位置の指定に \|h| は使わない．
-また，図の下に和文と英文の双方の見出しを，
-\|\caption| と \|\ecaption| で指定する．
-文字数が多い見出しはは自動的に改行して最大幅の行を基準にセンタリングするが，
-見出しが2行になる場合には適宜 \|\\| を挿入して改行したほうが
-良い結果となることがしばしばある（\figref{fig:single} の英文見出しを参照）．
-図の参照は \|\figref{<|ラベル\|>}| を用いて行なう．
-
-
-また紙面スペースの節約のために，
-1つの \|figure|（または \|table|）環境の中に複数の図表を並べて表示したい場合には，
-\figref{fig:left} と \tabref{tab:right} のように個々の
-図表と各々の \|\caption|/\|\ecaption| を \|minipage| 環境に入れることで実現できる．
-なお図と表が混在する場合，
-\|minipage| 環境の中で\|\CaptionType{figure}| あるいは \|\CaptionType| \|{table}| を指定すれば，
-外側の環境が \|figure| であっても \|table| であっても指定された見出しが得られる．
-
-
-
-%4.7
-\subsection{参考文献・謝辞}
-
-%4.7.1
-\subsubsection{参考文献の参照}
-
-本文中で参考文献を参照する場合には\|\cite|を使用する．
-参照されたラベルは自動的にソートされ，
-\|[]|でそれぞれ区切られる．
-%
-\begin{quote}
-	文献 \|\cite{companion,okumura}| は \LaTeX の総合的な解説書である．
-\end{quote}
-%
-と書くと；
-%
-\begin{quote}
-	文献\cite{companion,okumura}は \LaTeX の総合的な解説書である．
-\end{quote}
-%
-が得られる．
-
-%4.7.2
-\subsubsection{参考文献リスト}
-参考文献リストには，
-原則として本文中で引用した文献のみを列挙する．
-順序は参照順あるいは第一著者の苗字のアルファベット順とする．
-文献リストはBiB\TeX と\verb+ipsjunsrt.bst+（参照順）
-または\verb+ipsjsort.bst+（アルファベット順）を用いて作り，
-\verb+\bibliograhpystyle+と\verb+\bibliography+コマンドにより
-利用することが出来る．
-これらを用いれば，
-規定の体裁にあったものができるので，
-できるだけ利用していただきたい．
-また製版用のファイル群には\verb+.bib+ファイルではなく\verb+.bbl+ファイルを
-必ず含めることに注意されたい．
-一方，何らかの理由でthebibliography環境で文献リストを
-「手作り」しなければならない場合は，
-このガイドの参考文献リストを注意深く見て，
-そのスタイルにしたがっていただきたい．
-
-
-
-%4.7.3
-\subsubsection{謝辞}
-
-謝辞がある場合には，参考文献リストの直前に置き，\|acknowledgment|環境の中に入れる．
-
-
-
 %6
 \section{おわりに}
 
@@ -431,3 +399,34 @@ pd.DataFrame(pca_row, columns=["PC{}".format(x + 1)
 \begin{thebibliography}{2}
 \end{thebibliography}
 \end{document}
+
+%^^^^^^^^^^^^^^^^^^^
+%\subsection{図}
+%1段の幅におさまる図は，
+%\figref{fig:single} の形式で指定する．
+%位置の指定に \|h| は使わない．
+%また，図の下に和文と英文の双方の見出しを，
+%\|\caption| と \|\ecaption| で指定する
+%図の参照は \|\figref{<|ラベル\|>}| を用いて行なう．
+
+%また紙面スペースの節約のために，
+%1つの \|figure|（または \|table|）環境の中に複数の図表を並べて表示したい場合には，
+%\figref{fig:left} と \tabref{tab:right} のように個々の
+%%図表と各々の \|\caption|/\|\ecaption| を \|minipage| 環境に入れることで実現できる．
+%なお図と表が混在する場合，
+%\|minipage| 環境の中で\|\CaptionType{figure}| あるいは \|\CaptionType| \|{table}| を指定すれば，
+%外側の環境が \|figure| であっても \|table| であっても指定された見出しが得られる．
+
+
+%4.7.1
+%\subsubsection{参考文献の参照}
+%本文中で参考文献を参照する場合には\|\cite|を使用する．
+%参照されたラベルは自動的にソートされ，\|[]|でそれぞれ区切られる．
+%
+%\begin{quote}
+%	文献 \|\cite{companion,okumura}| は \LaTeX の総合的な解説書である．
+%\end{quote}
+%文献リストはBiB\TeX と\verb+ipsjunsrt.bst+（参照順）
+%または\verb+ipsjsort.bst+（アルファベット順）を用いて作り，
+%\verb+\bibliograhpystyle+と\verb+\bibliography+コマンドにより
+%また製版用のファイル群には\verb+.bib+ファイルではなく\verb+.bbl+ファイルを必ず含めることに
