@@ -128,6 +128,22 @@ Articleの内数である、departmental bulletin paper（紀要）を別項目�
 にて確認すると、
 表\ref{table:alld}のとおりとなる。
 
+
+%3
+\section{構成比}
+全体の構成は以下のとおりとなる。
+
+\begin{figure}[h]
+	\includegraphics[width=8cm]{./picture/stack_all.png}
+	\includegraphics[width=8cm]{./picture/stack_honbun.png}
+	\includegraphics[width=8cm]{./picture/stack_sabun.png}
+	\caption{外れ値を除いた箱ひげ図}
+	\ecaption{Single column figure with caption\\
+		explicitly broken by $\backslash\backslash$.}
+	\label{fig:box1}
+\end{figure}
+
+
 %3
 \section{主成分分析}
 \label{PCA}
@@ -244,7 +260,7 @@ IRDBのデータから機関リポジトリの特徴を見るためには、量�
 標準偏差が1となるように変換する。
 
 \begin{lstlisting}[language=Python,breaklines]
-	# 変数の標準化
+	# 変数（特徴量）の標準化
 	df2205_all_std = df2205_all_dstd.apply(lambda x: (x-x.mean())/x.std(), axis=0)
 	# 結果を少数以下2桁で丸めて表示
 	df2205_all_std.describe().round(2)
@@ -253,14 +269,12 @@ IRDBのデータから機関リポジトリの特徴を見るためには、量�
 結果は \ref{table:std1} のとおり、
 平均が0、標準偏差が1となるように変換されていることが分かる。
 
-%3.3
+%5.4
 \subsection{主成分分析}
 
+以下で、主成分分析を実行する。
+
 \begin{lstlisting}[language=Python,breaklines]
-	# ライブラリのインポート
-	import numpy as np
-	import pandas as pd
-	import matplotlib.pyplot as plt
 	from sklearn.decomposition import PCA
 	# 主成分分析の実行
 	pca = PCA()
@@ -268,11 +282,133 @@ IRDBのデータから機関リポジトリの特徴を見るためには、量�
 
 	# データを主成分に変換
 	pca_row = pca.transform(df2205_all_std)
-
-	# 主成分得点
-pd.DataFrame(pca_row, columns=["PC{}".format(x + 1)
-              for x in range(len(df2205_all_std.columns))]).describe().round(2)
 \end{lstlisting}
+
+次に、寄与率を求め、累積寄与率のグラフを書きます。
+寄与率は、データの全情報の中で、各要素のもつ情報が占める割合を表し、
+値が大きいほど相対的に説明力が高い主成分であることを示す。\\
+累積寄与率は、寄与率を大きい順に順次足したもので、
+主成分が全体の中でどれだけの割合を占めるかを示す。
+
+\begin{lstlisting}[language=Python,breaklines]
+# 寄与率を求める
+pca_col = ["PC{}".format(x + 1) for x in range(len(df2205_all_std.columns))]
+df_con_ratio = pd.DataFrame([pca.explained_variance_ratio_], columns = pca_col)
+print(df_con_ratio)
+
+# 累積寄与率を図示する
+cum_con_ratio = np.hstack([0, pca.explained_variance_ratio_]).cumsum()
+plt.plot(cum_con_ratio, 'D-')
+plt.xticks(range(9))
+plt.yticks(np.arange(0,1.05,0.05))
+plt.grid()
+plt.show()
+\end{lstlisting}
+
+以下のグラフによれば、第1主成分の寄与率は，0.23951 である
+一般的には、累積寄与率が80％以上になる主成分数を採用して分析結果に用いることが多い
+と言われているが、第2主成分までだと約40%であり、若干説明力は弱い。
+
+\begin{figure}[h]
+	\includegraphics[width=8cm]{./picture/cumulative_contribution_ratio.png}
+	\caption{累積寄与率}
+	\ecaption{cumulative contribution ratio}
+	\label{fig:umulative_contribution_ratio}
+\end{figure}
+
+第1主成分と第2主成分でプロットしてみる。
+
+\begin{lstlisting}[language=Python,breaklines]
+	# 第1主成分と第2主成分でプロットする
+	import matplotlib.pyplot as plt
+	plt.rcParams["font.family"] = "Meiryo" # "MS Gothic"
+	plt.figure(figsize=(12, 12))
+	plt.scatter(pca_row[:, 0], pca_row[:, 1], alpha=0.8)  # c=list(df2205_all_std.iloc[:, 0]))
+	plt.grid()
+	plt.xlabel("PC1")
+	plt.ylabel("PC2")
+	
+	for k, v in pca_tokuten_0.iterrows():
+		plt.annotate(k,xy=(v[0],v[1]),size=8)
+	plt.show()
+	\end{lstlisting}
+
+\begin{figure}[h]
+	\includegraphics[width=8cm]{./picture/pc1pc2.png}
+	\caption{第1主成分と第2主成分}
+	\ecaption{first and second principal component}
+	\label{fig:pc1pc2}
+\end{figure}
+
+グラフのとおり、第1主成分では東京工業大学が、
+第2主成分では北海道大学や早稲田大学などが突出しており、
+原点付近に集中しているため、文字が重なり真っ黒になってしまった。
+
+次に、主成分に対する各変数の影響度合いを見るため、主成分負荷量を求める。
+これにより，各主成分が何を意味しているかが分かりやすくなる。
+
+
+\begin{lstlisting}[language=Python,breaklines]
+	# 主成分負荷量を求める
+	df_pca = pd.DataFrame(pca_row, columns = pca_col)
+	df_pca_vec = pd.DataFrame(pca.components_, columns=df2205_all_std.columns,
+		index=["PC{}".format(x + 1) for x in range(len(df_pca.columns))])
+	print(df_pca_vec)
+	
+	# 主成分負荷量を図示する
+	plt.figure(figsize=(6, 6))
+	for x, y, name in zip(pca.components_[0], pca.components_[1], df2205_all_std.columns[0:]):
+		plt.text(x, y, name)
+	plt.scatter(pca.components_[0], pca.components_[1])
+	plt.grid()
+	plt.xlabel("PC1")
+	plt.ylabel("PC2")
+	plt.show()
+\end{lstlisting}
+
+\begin{figure}[h]
+	\includegraphics[width=8cm]{./picture/principal_component_loading.png}
+	\caption{主成分負荷量}
+	\ecaption{principal component loading}
+	\label{fig:pcloading}
+\end{figure}
+
+図\ref{fig:pcloading}を見ると、第1主成分にはArticleとBookが、
+第2主成分にはKiyouの影響が大きいことが分かり、
+図\ref{fig:pc1pc2}で、
+第1主成分が高い東京工業大学がArticleとBookの割合が高いこと、
+第2主成分が高い北海道大学や早稲田大学がKiyouやLectureの割合が高いこと、
+また、
+図\ref{fig:heatmap12}の印象とも一致する。
+
+図\ref{fig:pc1pc2}では、いわゆる外れ値が大きいので、外れ値を抜いて分析してみる。
+
+\begin{lstlisting}[language=Python,breaklines]
+	# 外れ値（例外的に、値が大きな機関）を削除する
+	# nd配列pca_rowをDataFrameにする
+	pca_row_df = pd.DataFrame(pca_row, index= list(df2205_all_std.index), columns=["PC{}".format(x + 1)
+			for x in range(len(df2205_all_std.columns))])
+	outlier = list(pca_row_df[pca_row_df[['PC1','PC2']] > 5].dropna(how='all').index)
+	pca_row_df_o = pca_row_df.drop(outlier)
+	print(outlier)
+\end{lstlisting}
+
+これにより、
+'早稲田大学', '筑波大学', '東京工業大学', '東京大学', '京都大学', '日本貿易振興機構アジア経済研究所', '北海道大学', '千葉大学'
+8機関が抽出され、日本の機関リポジトリとしては特徴的な機関であることが分かる。
+さきほど同じように、第1主成分と第2主成分でプロットしてみる。
+\begin{figure}[h]
+	\includegraphics[width=8cm]{./picture/pc1pc2_outlier.png}
+	\caption{第1主成分と第2主成分（外れ値を削除）}
+	\ecaption{first and second principal component:outlier}
+	\label{fig:pc1pc2_outlier}
+\end{figure}
+
+さらに同じように外れ値を抽出してみると、
+'東京経済大学', '東北大学', '大阪大学', '大阪市立大学', '岡山大学', '新潟大学', '九州大学', '神戸大学', '慶應義塾大学', '金沢大学', '海洋研究開発機構', '宇宙航空研究開発機構', '一橋大学', '広島大学'
+が特徴的な機関であることが分かる。
+
+
 
 \onecolumn
 
