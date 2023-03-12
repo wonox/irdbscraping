@@ -2153,7 +2153,7 @@ Presently with\ %
 \vskip\Eauthorreceivesep%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 {\Enguketukefont%
-{\@uketsuke}\par}%
+%20230312-- {\@uketsuke}\par}%
 %%%%%%%%%%%%%%%%%%%%%%%
 \vskip\Ereceiveabstsep%
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -2185,8 +2185,8 @@ Presently with\ %
 \vskip\Jauthorjreceivesep%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %======
-{\juketukefont%
-{\@uketsuke}\par}%
+%20230312-- {\juketukefont%
+%20230312-- {\@uketsuke}\par}%
 %%%%%%%%%%%%%%%%%%%%%%%%
 \vskip\Jreceivejabstsep%
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -2208,8 +2208,8 @@ Presently with\ %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vskip\Jeauthorereceivesep%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-{\euketukefont%
-{\@euketsuke}\par}%
+%20230312--受付を表示しない {\euketukefont%
+%20230312-- {\@euketsuke}\par}%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \vskip\Jereceiveeabstsep%
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3808,7 +3808,7 @@ Keywords:\hskip.5em%
 \newenvironment{thebibliography}[1]
  {%
 \ifDS@english
-%\fontsize{11\Q}{12\h}\selectfont%
+\fontsize{11\Q}{12\h}\selectfont%
 \footnotesize\baselineskip12\h % 11Qx12H
 \else
 \small\baselineskip15\h % 12Qx15H

@@ -7,46 +7,48 @@
 \usepackage{url}
 \usepackage{lmodern}
 \usepackage{booktabs}
-\usepackage{tabularx} 
+% \usepackage[tablesfirst]{endfloat}
+% \usepackage{endfloat}
+\usepackage{tabularx}
 
 \def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
 \def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
 \def\|{\verb|}
 
-% \setcounter{巻数}{59}
-% \setcounter{号数}{1}
-% \setcounter{page}{1}
-
-\受付{2016}{3}{4}
-\採録{2016}{8}{1}
-
 \begin{document}
 
-\title{論文タイトル\\}
+\title{IRDBデータによる日本の機関リポジトリの特徴の分析\\}
 
-\etitle{English Title ssample \\
-	(kakkokako)}
+\etitle{Analysis of the characteristics of Japanese institutional repositories using IRDB data\\}
 
 \paffiliate{JU}{東京大学駒場図書館\\
 	Komaba Library, University of Tokyo}
 
-\author{小野 亘}{Wataru, ONO}{utokyo}[ono.wataru@mail.u-tokyo.ac.jp]
+\author{小野 亘}{Wataru, ONO}{https://orcid.org/0000-0002-6398-9317}[ono.wataru.plus@gmail.com]
 
 \begin{abstract}
-	本稿は，NII 等をまとめたものであるよね．
+本稿は、Pythonのデータ解析のためのライブラリであるPANDASを用い、
+NIIのIRDBデータから、日本の機関リポジトリの特徴の分析を行ったものである。
+日本の機関リポジトリは、紀要に大きな特徴があることをデータの上から明らかにし、
+特徴的な機関の抽出を行った。
 \end{abstract}
 
 
 \begin{jkeyword}
-	情報処理学会論文誌ジャーナル，\LaTeX，スタイルファイル，べからず集
+	IRDB, 機関リポジトリ, 紀要
 \end{jkeyword}
 
 \begin{eabstract}
-	This document is
+This paper is an analysis of the characteristics of Japanese institutional
+ repositories from NII's IRDB data using PANDAS, 
+ a library for data analysis in Python.
+ The data revealed that Japanese institutional repositories have 
+ significant characteristics in their departmental bulletin paper (Kiyou), 
+ and I extracted the characteristic institutions.
 \end{eabstract}
 
 \begin{ekeyword}
-	IPSJ Journal, \LaTeX, style files, ``Dos and Don'ts'' list
+	IRDB, Intitutional repositories, Departmental Bulletin Paper
 \end{ekeyword}
 
 \maketitle
@@ -62,10 +64,26 @@
 
 %2
 \section{方法}
+Pythonのデータ解析のためのライブラリであるPANDASを用い、
+NIIのIRDBデータから、日本の機関リポジトリの特徴の分析を行ったものである。
+資源タイプは47項目あるが、大項目12に紀要を加えた、13項目について検討した。
 今回は、Python 3.10.7、Pandas 1.5.2 を使用した。
+分析に使用したJupyter Notebook ファイルは以下
+\footnotetext{https://github.com/wonox/irdbscraping/blob/main/irdb.ipynb}
+に置いた。
 
 %3
 \section{結論}
+日本の機関リポジトリでは、リポジトリの中で、紀要の占める割合が9割を
+超える機関が7割を超えていることが分かった。、
+主成分分析を用いて特徴的な機関の抽出を行った結果、
+第1主成分にはArticleとBookが、
+第2主成分にはKiyouの影響が大きいことが分かり、
+第1主成分が高い東京工業大学がArticleとBookの割合が高いこと、
+第2主成分が高い北海道大学や早稲田大学がKiyouやLectureの割合が高いこと、
+外れ値を抽出してみると、
+'東京経済大学', '東北大学', '大阪大学', '大阪市立大学', '岡山大学', '新潟大学', '九州大学', '神戸大学', '慶應義塾大学', '金沢大学', '海洋研究開発機構', '宇宙航空研究開発機構', '一橋大学', '広島大学'
+が特徴的な機関であることが分かった。
 
 %4
 \section{データの読み込み、前処理}
@@ -85,7 +103,7 @@ Pandas のDataFrameに読み込む
 列名を振りなおす（コードの詳細は省略）。
 
 % Overfull \hbox 対策に、breaklines が必要
-\begin{lstlisting}[language=Python,breaklines,caption=hoge,label=fuga]
+\begin{lstlisting}[language=Python,breaklines,caption=hoge,label=df2205_all]
 	df2205_all = df2205i.iloc[:,17:64]
 	df2205_honbun = df2205i.iloc[:,75:]
 	df2205_sabun = df2205_all - df2205_honbun
@@ -94,7 +112,8 @@ Pandas のDataFrameに読み込む
 
 %2.1
 \subsection{資源タイプの集約}
-機関リポジトリには、コンテンツの種類を表す47個の資源タイプのいずれかを付すことになっているが、以下の大項目13個にまとめる。
+機関リポジトリには、コンテンツの種類を表す47個の資源タイプのいずれかを付すことになっているが、
+以下の大項目13個にまとめる。
 
 \begin{Enumerate}
 	\item \|departmental bulletin paper|: 紀要
@@ -114,7 +133,8 @@ Pandas のDataFrameに読み込む
 
 JPCOARスキーマガイドラインの資源タイプ語彙別表
 \footnote{\url{https://schema.irdb.nii.ac.jp/ja/resource_type_vocabulary}}
-で示されている大項目は12項目だが、日本の機関リポジトリは、紀要に一つの特徴があることは明らかなので、
+で示されている大項目は12項目だが、
+日本の機関リポジトリは、紀要に一つの特徴があることが経験上推測されるため、
 Articleの内数である、departmental bulletin paper（紀要）を別項目とし、全部で13項目とした。
 
 ここで作成したデータフレームを
@@ -128,21 +148,35 @@ Articleの内数である、departmental bulletin paper（紀要）を別項目�
 にて確認すると、
 表\ref{table:alld}のとおりとなる。
 
-
 %3
 \section{構成比}
-全体の構成は以下のとおりとなる。
+全体の構成は図\ref{fig:stack1}のとおりとなる。
+一見して、kiyou が多くを占めていることが分かる。
 
 \begin{figure}[h]
 	\includegraphics[width=8cm]{./picture/stack_all.png}
 	\includegraphics[width=8cm]{./picture/stack_honbun.png}
 	\includegraphics[width=8cm]{./picture/stack_sabun.png}
-	\caption{外れ値を除いた箱ひげ図}
-	\ecaption{Single column figure with caption\\
-		explicitly broken by $\backslash\backslash$.}
-	\label{fig:box1}
+	\caption{コンテンツ数上位50機関で構成比率の積み上げグラフ}
+	\ecaption{Stacked graph of composition ratios for the 
+	top 50 institutions in terms of number of contents}
+	\label{fig:stack1}
 \end{figure}
 
+図\ref{fig:percentage}のとおり、全体（n=792）を、
+リポジトリごとのコンテンツ数の比率の高い順に並べてみると、
+kiyou が多くを占め、かつkiyouが各リポジトリの中でほとんどを占めている機関が多いことが、
+よりはっきりする。
+
+\begin{figure}[h]
+	\includegraphics[width=8cm]{./picture/percentage_sort.png}
+	\caption{資料タイプ別百分率}
+	\ecaption{Stacked graph of composition ratios for the 
+	top 50 institutions in terms of number of contents}
+	\label{fig:percentage}
+\end{figure}
+
+実際には、資源タイプの内、Kiyou が90%を超えている機関が70%以上であった。
 
 %3
 \section{主成分分析}
@@ -160,7 +194,7 @@ Articleの内数である、departmental bulletin paper（紀要）を別項目�
 標準偏差が小さい、ということは、全体のバラツキが小さいということ、
 つまり、測定値の分布が平均値の周りに集まっているということを表している。
 
-\begin{lstlisting}[language=Python,breaklines, caption=,label=fuga]
+\begin{lstlisting}[language=Python,breaklines, caption=,label=df2205_all_dstd]
 	std0 = (df2205_all_d.std(axis=0) > 1)
 	df2205_all_dstd = df2205_all_d.loc[:, std0]
 \end{lstlisting}
@@ -186,7 +220,9 @@ BookとThesisの2つに75\%は第三四分位数に数字があるのみであ�
 区切り点を四分位数と言う。\\
 それぞれ25パーセンタイル（第一四分位数）、50パーセンタイル（中央値）、
 75パーセンタイル（第三四分位数）とよばれる。”
+
 \footnote{\url{https://bellcurve.jp/statistics/glossary/1919.html}}
+
 であり、
 紀要の場合全体の3/4の位置で129件あるが、図書は1/4の位置で2件、
 学位論文は1/4の位置で20件しかないことが分かる。
@@ -406,24 +442,62 @@ plt.show()
 
 さらに同じように外れ値を抽出してみると、
 '東京経済大学', '東北大学', '大阪大学', '大阪市立大学', '岡山大学', '新潟大学', '九州大学', '神戸大学', '慶應義塾大学', '金沢大学', '海洋研究開発機構', '宇宙航空研究開発機構', '一橋大学', '広島大学'
-が特徴的な機関であることが分かる。
+が特徴的な機関であることが分かった。
 
+% %6
+% \section{おわりに}
 
+% 本稿では，
 
+% \begin{acknowledgment}
+% 	深謝する．
+% \end{acknowledgment}
+
+% \begin{thebibliography}{9}
+% 	\bibitem{okumura}
+% 	奥村晴彦：改訂第5版 \LaTeXe 美文書作成入門，
+% 	技術評論社(2010).
+	
+% 	\bibitem{companion}
+% 	Goossens, M., Mittelbach, F. and Samarin, A.: {\it The LaTeX Companion},
+% 	Addison Wesley, Reading, Massachusetts (1993).
+	
+% 	\bibitem{book1}
+% 	木下是雄：
+% 	理科系の作文技術，
+% 	中公新書(1981).
+	
+% 	\bibitem{book2}
+% 	Strunk, W.J. and White, E.B.: {\it The Elements of Style, Forth Edition},
+% 	Longman (2000).
+	
+% 	\bibitem{book3}
+% 	Blake, G. and Bly, R.W.: {\it The Elements of Technical Writing},
+% 	Longman (1993).
+	
+% 	\bibitem{book4}
+% 	Higham, N.J.:
+% 	{\it Handbook of Writing for the Mathematical Sciences},
+% 	SIAM (1998).
+	
+% 	\bibitem{webpage1}
+% 	情報処理学会論文誌ジャーナル編集委員会：
+% 	投稿者マニュアル(オンライン)，
+% 	\urlj{http://www.ipsj.or.jp/journal/ submit/manual/j\_manual.html}%
+% 	\refdatej{2007-04-05}.
+	
+% 	\bibitem{webpage2}
+% 	情報処理学会論文誌ジャーナル編集委員会：
+% 	べからず集(オンライン)，
+% 	\urlj{http://www.ipsj.or.jp/journal/\\ manual/bekarazu.html}%
+% 	\refdatej{2011-09-15}.
+	
+% 	\end{thebibliography}
+	
+%============================
+%--------------
 \onecolumn
 
-% 2段ぶちぬきで下方に図を表示する
-\begin{figure}[tb]
-	\label{fig:box100000000000000000000000000000}
-	%　\figref{fig:box1}
-	\twocolfig{
-		\includegraphics[width=12cm]{./picture/df2205alldstdboxplot.png}
-	}
-	\twocolcaption{df2205\_all\_dstdの箱ひげ図
-	＜大き目な図これ[ｂ]だとボトムに図が表示される＞}
-\end{figure}
-
-%--------------
 \begin{table}[tb]
 	\caption{df2205\_all\_d.describe\(\)}
 	\ecaption{df2205\_all\_d.describe\(\)}
@@ -445,7 +519,23 @@ plt.show()
 			\end{tabular}
 	}
 \end{table}
+
+% \twocolumn
 %--------------
+
+% \onecolumn
+
+% 2段ぶちぬきで下方に図を表示する
+\begin{figure}[tb]
+	\label{fig:box100000000000000000000000000000}
+	%　\figref{fig:box1}
+	\twocolfig{
+		\includegraphics[width=12cm]{./picture/df2205alldstdboxplot.png}
+	}
+	\twocolcaption{df2205\_all\_dstdの箱ひげ図}
+\end{figure}
+% ＜大き目な図これ[ｂ]だとボトムに図が表示される＞
+
 
 
 \begin{table}[tb]
@@ -503,66 +593,4 @@ plt.show()
 
 %====================
 
-
-\begin{figure}[tb]
-	\setbox0\vbox{
-		\hbox{\|\begin{figure}[tb]|}
-				\hbox{\quad \|<|図本体の指定\|>|}
-				\hbox{\|\caption{<|和文見出し\|>}|}
-				\hbox{\|\ecaption{<|英文見出し\|>}|}
-				\hbox{\|\label{| $\ldots$ \|}|}
-				\hbox{\|\end{figure}|}
-	}
-	\centerline{\fbox{\box0}}
-	\caption{1段幅の図}
-	\ecaption{Single column figure with caption\\
-		explicitly broken by $\backslash\backslash$.}
-	\label{fig:single}
-\end{figure}
-
-
-%6
-\section{おわりに}
-
-本稿では，
-
-
-
-\begin{acknowledgment}
-	深謝する．
-\end{acknowledgment}
-
-\begin{thebibliography}{2}
-\end{thebibliography}
 \end{document}
-
-%^^^^^^^^^^^^^^^^^^^
-%\subsection{図}
-%1段の幅におさまる図は，
-%\figref{fig:single} の形式で指定する．
-%位置の指定に \|h| は使わない．
-%また，図の下に和文と英文の双方の見出しを，
-%\|\caption| と \|\ecaption| で指定する
-%図の参照は \|\figref{<|ラベル\|>}| を用いて行なう．
-
-%また紙面スペースの節約のために，
-%1つの \|figure|（または \|table|）環境の中に複数の図表を並べて表示したい場合には，
-%\figref{fig:left} と \tabref{tab:right} のように個々の
-%%図表と各々の \|\caption|/\|\ecaption| を \|minipage| 環境に入れることで実現できる．
-%なお図と表が混在する場合，
-%\|minipage| 環境の中で\|\CaptionType{figure}| あるいは \|\CaptionType| \|{table}| を指定すれば，
-%外側の環境が \|figure| であっても \|table| であっても指定された見出しが得られる．
-
-
-%4.7.1
-%\subsubsection{参考文献の参照}
-%本文中で参考文献を参照する場合には\|\cite|を使用する．
-%参照されたラベルは自動的にソートされ，\|[]|でそれぞれ区切られる．
-%
-%\begin{quote}
-%	文献 \|\cite{companion,okumura}| は \LaTeX の総合的な解説書である．
-%\end{quote}
-%文献リストはBiB\TeX と\verb+ipsjunsrt.bst+（参照順）
-%または\verb+ipsjsort.bst+（アルファベット順）を用いて作り，
-%\verb+\bibliograhpystyle+と\verb+\bibliography+コマンドにより
-%また製版用のファイル群には\verb+.bib+ファイルではなく\verb+.bbl+ファイルを必ず含めることに
