@@ -1,3 +1,6 @@
 .vscode/settings.json
 inst_array.pkl
 *.xlsx
+# out フォルダは要らない
+out/
+不用/
