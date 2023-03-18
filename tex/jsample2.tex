@@ -21,10 +21,10 @@
 
 \etitle{Analysis of the characteristics of Japanese institutional repositories using IRDB data\\}
 
-\paffiliate{JU}{東京大学駒場図書館\\
+\paffiliate{JU}{東京大学教養学部（駒場図書館）\\
 	Komaba Library, University of Tokyo}
 
-\author{小野 亘}{Wataru, ONO}{https://orcid.org/0000-0002-6398-9317}[ono.wataru.plus@gmail.com]
+\author{小野 亘}{Wataru, ONO}{https://orcid.org/0000-0002-6398-9317}[ono.wataru@mail.u-tokyo.ac.jp]
 
 \begin{abstract}
 本稿は、Pythonのデータ解析のためのライブラリであるPANDASを用い、
@@ -56,7 +56,7 @@ This paper is an analysis of the characteristics of Japanese institutional
 %1
 \section{はじめに}
 
-本稿では，国立情報学（NII）のIRDBから統計データを取得し、
+本稿では、国立情報学（NII）のIRDBから統計データを取得し、
 日本の機関リポジトリに登録されたコンテンツの種別(資源タイプ）の分析を行い、
 その側面から、日本の機関リポジトリの特徴を明らかにするものである。
 
@@ -113,6 +113,7 @@ Pandas のDataFrameに読み込む
 %2.1
 \subsection{資源タイプの集約}
 機関リポジトリには、コンテンツの種類を表す47個の資源タイプのいずれかを付すことになっているが、
+\cite{ozono}
 以下の大項目13個にまとめる。
 
 \begin{Enumerate}
@@ -445,15 +446,15 @@ plt.show()
 が特徴的な機関であることが分かった。
 
 % %6
-% \section{おわりに}
-
+\section{おわりに}
+Pythonの使用には、\cite{book1}などを参考にした。
 % 本稿では，
 
 % \begin{acknowledgment}
-% 	深謝する．
+% 謝辞はここにかく
 % \end{acknowledgment}
 
-% \begin{thebibliography}{9}
+\begin{thebibliography}{}
 % 	\bibitem{okumura}
 % 	奥村晴彦：改訂第5版 \LaTeXe 美文書作成入門，
 % 	技術評論社(2010).
@@ -462,10 +463,19 @@ plt.show()
 % 	Goossens, M., Mittelbach, F. and Samarin, A.: {\it The LaTeX Companion},
 % 	Addison Wesley, Reading, Massachusetts (1993).
 	
-% 	\bibitem{book1}
-% 	木下是雄：
-% 	理科系の作文技術，
-% 	中公新書(1981).
+\bibitem{book1}
+寺田学, 辻真吾, 鈴木たかのり, 福島真太朗:
+Pythonによるあたらしいデータ分析の教科書
+翔泳社(2022).
+
+\bibitem{ozono}
+大園 隼彦, 片岡 朋子, 高橋 菜奈子, 田口 忠祐, 林 豊, 南山 泰之:
+“JPCOARスキーマの策定：日本の学術成果の円滑な国際的流通を目指して.”
+情報管理, vol. 60, no. 10, 2017, pp. 719–29
+urlj{https://doi.org/10.1241/johokanri.60.719.}
+\refdatej{ 18 Mar. 2023.}
+
+‌
 	
 % 	\bibitem{book2}
 % 	Strunk, W.J. and White, E.B.: {\it The Elements of Style, Forth Edition},
@@ -478,7 +488,7 @@ plt.show()
 % 	\bibitem{book4}
 % 	Higham, N.J.:
 % 	{\it Handbook of Writing for the Mathematical Sciences},
-% 	SIAM (1998).
+% SIAM (1998).
 	
 % 	\bibitem{webpage1}
 % 	情報処理学会論文誌ジャーナル編集委員会：
@@ -492,7 +502,7 @@ plt.show()
 % 	\urlj{http://www.ipsj.or.jp/journal/\\ manual/bekarazu.html}%
 % 	\refdatej{2011-09-15}.
 	
-% 	\end{thebibliography}
+\end{thebibliography}
 	
 %============================
 %--------------

@@ -2043,7 +2043,7 @@ Presently with\ %
       \@tempcnta\@ne
       \@whilenum{\@tempcnta<\@tempcntb}\do{%
       \refstepcounter{footnote}
-      % \footnotetext{\csname authoremail\the\count@ @\the\@tempcnta\endcsname}%
+      \footnotetext{\csname authoremail\the\count@ @\the\@tempcnta\endcsname}%
       \advance\@tempcnta\@ne
       }%
    \advance\count@\@ne
